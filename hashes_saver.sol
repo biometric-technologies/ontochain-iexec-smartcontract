@@ -1,12 +1,19 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.9;
+pragma solidity ^0.8.0;
 
 contract HashStorage {
     address private _owner;
 
-    mapping(string => uint256) hashes;
+    mapping(string => HashStruct) public hashes;
 
-    event NewHash(string[] hash, uint256 date);
+    event NewHash(HashStruct[] hash);
+
+    struct HashStruct {
+        string hash;
+        uint256 timestamp;
+        string loanId;
+    }
+
     error OwnableInvalidOwner(address owner);
 
     constructor() {
@@ -18,24 +25,24 @@ contract HashStorage {
         _;
     }
 
-    function saveHashes(string[] memory _hashes) onlyOwner public {
+    function saveHashes(HashStruct[] memory _hashes) onlyOwner public {
 
         for (uint i=0; i < _hashes.length; i++) {
-            require(isExist(_hashes[i]), "Hash already exist.");
-            hashes[_hashes[i]] =  block.timestamp;
+            require(isExist(_hashes[i].hash), "Hash already exist.");
+            hashes[_hashes[i].hash] = HashStruct(_hashes[i].hash, _hashes[i].timestamp, _hashes[i].loanId);
         }
 
-        emit NewHash(_hashes, block.timestamp);
+        emit NewHash(_hashes);
     }
 
-    function getHashInfo(string memory hash) external view returns (uint256) {
+    function getHashInfo(string memory hash) external view returns (HashStruct memory) {
         require(!isExist(hash), "Hash does not exist.");
 
         return hashes[hash];
     }
 
     function isExist(string memory hash) private view returns (bool) {
-        uint256 index = hashes[hash]; 
+        uint256 index = hashes[hash].timestamp; 
         return index == 0;
     }
 
