@@ -33,4 +33,4 @@ License: not yet specified (there is no LICENSE file). The source file carries a
 
 ## Contact
 
-info@iriscan.net, https://www.iriscan.com
+info@iriscan.com, https://www.iriscan.com
